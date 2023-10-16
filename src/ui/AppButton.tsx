@@ -6,16 +6,18 @@ import {
   Text,
   ScrollViewPropsAndroid,
 } from 'react-native';
+import Loader from './Loader';
 
 interface Props {
   title: string;
   onPress?(): void;
+  isBusy?: boolean;
 }
 
-const AppButton: FC<Props> = ({title, onPress}) => {
+const AppButton: FC<Props> = ({title, onPress, isBusy}) => {
   return (
     <Pressable onPress={onPress} style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      {!isBusy ? <Text style={styles.title}>{title}</Text> : <Loader />}
     </Pressable>
   );
 };

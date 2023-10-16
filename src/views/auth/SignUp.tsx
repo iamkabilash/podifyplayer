@@ -8,8 +8,18 @@ import SubmitBtn from '@components/form/SubmitBtn';
 import PasswordVisibilityIcon from '@ui/PasswordVisibilityIcon';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AuthStackParamList} from 'src/@types/navigation';
+import {FormikHelpers} from 'formik';
+import client from 'src/api/client';
 
 interface Props {}
+
+interface NewUser {
+  name: string;
+  email: string;
+  password: string;
+}
 
 const initialValues = {
   name: '',
@@ -42,15 +52,31 @@ const signUpSchema = yup.object({
 const SignUp: FC<Props> = props => {
   const [secureEntry, setSecureEntry] = useState(true);
 
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+
+  const handleSignUp = async (
+    values: NewUser,
+    actions: FormikHelpers<NewUser>,
+  ) => {
+    actions.setSubmitting(true);
+    try {
+      const {data} = await client.post('/auth/create', {
+        ...values,
+      });
+      navigation.navigate('Verification', {userInfo: data.user});
+    } catch (error) {
+      console.log('Error in SignUp: ', error);
+    }
+    actions.setSubmitting(false);
+  };
+
   return (
     <AuthFormContainer
       heading="Welcome!"
       subHeading="Let's get started by creating an account.">
       <Form
         initialValues={initialValues}
-        onSubmit={values => {
-          console.log(values);
-        }}
+        onSubmit={handleSignUp}
         validationSchema={signUpSchema}>
         <View style={styles.formContainer}>
           {/* name */}
@@ -84,8 +110,18 @@ const SignUp: FC<Props> = props => {
           />
           <SubmitBtn title="Sign Up" />
           <View style={styles.linkContainer}>
-            <AppLink title="Sign In" onPress={() => {}} />
-            <AppLink title="Forgot Password" onPress={() => {}} />
+            <AppLink
+              title="Sign In"
+              onPress={() => {
+                navigation.navigate('SignIn');
+              }}
+            />
+            <AppLink
+              title="Forgot Password"
+              onPress={() => {
+                navigation.navigate('ForgotPassword');
+              }}
+            />
           </View>
         </View>
       </Form>
