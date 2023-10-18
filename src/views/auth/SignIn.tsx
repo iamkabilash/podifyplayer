@@ -12,6 +12,9 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
 import {FormikHelpers} from 'formik';
 import client from 'src/api/client';
+import {updateLoggedInState, updateProfile} from 'src/store/auth';
+import {useDispatch} from 'react-redux';
+import {Keys, saveToAsyncStorage} from '@utils/asyncStorage';
 
 interface Props {}
 
@@ -43,6 +46,8 @@ const SignIn: FC<Props> = props => {
 
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
+  const dispatch = useDispatch();
+
   const handleSignIn = async (
     values: SignInUserInfo,
     actions: FormikHelpers<SignInUserInfo>,
@@ -52,7 +57,11 @@ const SignIn: FC<Props> = props => {
       const {data} = await client.post('/auth/sign-in', {
         ...values,
       });
-      console.log(data);
+      // console.log(data);
+      await saveToAsyncStorage(Keys.AUTH_TOKEN, data.token);
+
+      dispatch(updateProfile(data.profile));
+      dispatch(updateLoggedInState(true));
     } catch (error) {
       console.log('Error in SignIn: ', error);
     }
