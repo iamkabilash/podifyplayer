@@ -134,6 +134,7 @@ const Verification: FC<Props> = props => {
           isBusy={submitting}
           title="Submit OTP"
           onPress={handleSubmitOtp}
+          style={{borderRadius: 20}}
         />
         <View style={styles.linkContainer}>
           {!allowNewOtpRequest && (

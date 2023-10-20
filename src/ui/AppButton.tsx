@@ -1,22 +1,18 @@
 import colors from '@utils/colors';
 import {FC} from 'react';
-import {
-  StyleSheet,
-  Pressable,
-  Text,
-  ScrollViewPropsAndroid,
-} from 'react-native';
+import {StyleSheet, Pressable, Text, StyleProp, ViewStyle} from 'react-native';
 import Loader from './Loader';
 
 interface Props {
   title: string;
   onPress?(): void;
   isBusy?: boolean;
+  style?: StyleProp<ViewStyle>;
 }
 
-const AppButton: FC<Props> = ({title, onPress, isBusy}) => {
+const AppButton: FC<Props> = ({title, onPress, isBusy, style}) => {
   return (
-    <Pressable onPress={onPress} style={styles.container}>
+    <Pressable onPress={onPress} style={[styles.container, style]}>
       {!isBusy ? <Text style={styles.title}>{title}</Text> : <Loader />}
     </Pressable>
   );
@@ -29,7 +25,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.SECONDARY,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
   },
   title: {
     color: colors.CONTRAST,

@@ -14,6 +14,7 @@ const SubmitBtn: FC<Props> = props => {
       isBusy={isSubmitting}
       title={props.title}
       onPress={handleSubmit}
+      style={{borderRadius: 20}}
     />
   );
 };
