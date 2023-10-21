@@ -10,7 +10,10 @@ import {FC, useState} from 'react';
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {DocumentPickerResponse, types} from 'react-native-document-picker';
 import MaterialComIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch} from 'react-redux';
+import catchAsyncError from 'src/api/catchError';
 import client from 'src/api/client';
+import {updateNotifocation} from 'src/store/notification';
 import * as yup from 'yup';
 
 interface Props {}
@@ -54,6 +57,8 @@ const Upload: FC<Props> = props => {
   const [audioInfo, setAudioInfo] = useState({...defaultForm});
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isBusy, setIsBusy] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleUpload = async () => {
     // console.log(audioInfo);
@@ -99,13 +104,13 @@ const Upload: FC<Props> = props => {
       });
       setAudioInfo({...defaultForm});
       setIsBusy(false);
+      dispatch(
+        updateNotifocation({message: 'Audio uploaded', type: 'success'}),
+      );
       // console.log(data);
     } catch (error) {
-      if (error instanceof yup.ValidationError) {
-        console.log('Audio validation error: ', error);
-      } else {
-        console.log('Audio error: ', error);
-      }
+      const errorMessage = catchAsyncError(error);
+      dispatch(updateNotifocation({message: errorMessage, type: 'error'}));
     }
     setIsBusy(false);
   };

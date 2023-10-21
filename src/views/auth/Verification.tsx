@@ -16,6 +16,9 @@ import {AuthStackParamList} from 'src/@types/navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import client from 'src/api/client';
 import colors from '@utils/colors';
+import catchAsyncError from 'src/api/catchError';
+import {updateNotifocation} from 'src/store/notification';
+import {useDispatch} from 'react-redux';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Verification'>;
 
@@ -31,6 +34,7 @@ const Verification: FC<Props> = props => {
   const {userInfo} = props.route.params;
 
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+  const dispatch = useDispatch();
 
   const inputRef = useRef<TextInput>(null);
 
@@ -61,16 +65,21 @@ const Verification: FC<Props> = props => {
 
   const isValidOtp = otp.every(value => value.trim());
   const handleSubmitOtp = async () => {
-    if (!isValidOtp) return;
+    if (!isValidOtp)
+      return dispatch(
+        updateNotifocation({message: 'Invalid OTP', type: 'error'}),
+      );
     setSubmitting(true);
     try {
       const {data} = await client.post('/auth/verify-email', {
         userId: userInfo.id,
         token: otp.join(''),
       });
+      dispatch(updateNotifocation({message: data.message, type: 'success'}));
       navigation.navigate('SignIn');
     } catch (error) {
-      console.log('Error in Verification: ', error);
+      const errorMessage = catchAsyncError(error);
+      dispatch(updateNotifocation({message: errorMessage, type: 'error'}));
     }
     setSubmitting(false);
   };

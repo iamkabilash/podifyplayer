@@ -1,18 +1,23 @@
+import LatestUploads from '@components/LatestUploads';
+import RecommendedAudio from '@components/RecommendedAudio';
 import {FC} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 interface Props {}
 
 const Home: FC<Props> = props => {
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
+      <LatestUploads />
+      <RecommendedAudio />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    paddingHorizontal: 8,
+  },
 });
 
 export default Home;
