@@ -3,13 +3,17 @@ import PulseAnimationContainer from '@ui/PulseAnimationContainer';
 import colors from '@utils/colors';
 import {FC} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {AudiosData} from 'src/@types/audio';
 import {useFetchLatestAudios} from 'src/hooks/query';
 
-interface Props {}
+interface Props {
+  onAudioPress(item: AudiosData, data: AudiosData[]): void;
+  onAudioLongPress(item: AudiosData, data: AudiosData[]): void;
+}
 
 const dummyData = new Array(4).fill('');
 
-const LatestUploads: FC<Props> = props => {
+const LatestUploads: FC<Props> = ({onAudioPress, onAudioLongPress}) => {
   const {data, isLoading} = useFetchLatestAudios();
 
   if (isLoading) {
@@ -32,7 +36,13 @@ const LatestUploads: FC<Props> = props => {
       <Text style={styles.title}>Latest Uploads</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {data?.map(item => (
-          <AudioCard key={item.id} title={item.title} poster={item.poster} />
+          <AudioCard
+            key={item.id}
+            title={item.title}
+            poster={item.poster}
+            onPress={() => onAudioPress(item, data)}
+            onLongPress={() => onAudioLongPress(item, data)}
+          />
         ))}
       </ScrollView>
     </View>

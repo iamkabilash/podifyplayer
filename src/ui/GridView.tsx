@@ -1,13 +1,21 @@
 import colors from '@utils/colors';
 import {FC} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {AudiosData} from 'src/@types/audio';
 
 interface Props {
   data: any[];
   column?: number;
+  onAudioPress(item: AudiosData, data: AudiosData[]): void;
+  onAudioLongPress(item: AudiosData, data: AudiosData[]): void;
 }
 
-const GridView: FC<Props> = ({data, column = 2}) => {
+const GridView: FC<Props> = ({
+  data,
+  column = 2,
+  onAudioPress,
+  onAudioLongPress,
+}) => {
   const getPoster = (poster?: string) => {
     return poster ? {uri: poster} : require('../assets/music.png');
   };
@@ -15,9 +23,11 @@ const GridView: FC<Props> = ({data, column = 2}) => {
   return (
     <View style={styles.container}>
       {data?.map(item => (
-        <View style={{width: `${100 / column}%`}}>
+        <View key={item.id} style={{width: `${100 / column}%`}}>
           <View style={{padding: 6}}>
-            <Pressable>
+            <Pressable
+              onPress={() => onAudioPress(item, data)}
+              onLongPress={() => onAudioLongPress(item, data)}>
               <Image
                 source={getPoster(item.poster)}
                 style={styles.posterImage}

@@ -12,3 +12,10 @@ export interface AudiosData {
     id: string;
   };
 }
+
+export interface Playlist {
+  id: string;
+  title: string;
+  itemsCount: number;
+  visibility: 'public' | 'private';
+}

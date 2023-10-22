@@ -2,14 +2,18 @@ import GridView from '@ui/GridView';
 import PulseAnimationContainer from '@ui/PulseAnimationContainer';
 import colors from '@utils/colors';
 import {FC} from 'react';
-import {View, StyleSheet, Text, Image} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
+import {AudiosData} from 'src/@types/audio';
 import {useFetchRecommendedAudios} from 'src/hooks/query';
 
-interface Props {}
+interface Props {
+  onAudioPress(item: AudiosData, data: AudiosData[]): void;
+  onAudioLongPress(item: AudiosData, data: AudiosData[]): void;
+}
 
 const dummyData = new Array(6).fill('');
 
-const RecommendedAudio: FC<Props> = props => {
+const RecommendedAudio: FC<Props> = ({onAudioPress, onAudioLongPress}) => {
   const {data, isLoading} = useFetchRecommendedAudios();
 
   if (isLoading) {
@@ -30,7 +34,12 @@ const RecommendedAudio: FC<Props> = props => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Recommended Songs</Text>
-      <GridView data={data || []} column={3} />
+      <GridView
+        data={data || []}
+        column={3}
+        onAudioPress={onAudioPress}
+        onAudioLongPress={onAudioLongPress}
+      />
     </View>
   );
 };
