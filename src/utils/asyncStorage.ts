@@ -10,6 +10,11 @@ export const getFromAsyncStorage = async (key: string) => {
   return await AsyncStorage.getItem(key);
 };
 
+// remove from storage -> logout
+export const removeFromAsyncStorage = async (key: string) => {
+  await AsyncStorage.removeItem(key);
+};
+
 // clear storage
 export const clearAsyncStorage = async () => {
   await AsyncStorage.clear();
