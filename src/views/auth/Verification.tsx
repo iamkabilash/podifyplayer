@@ -1,26 +1,30 @@
 import {FC, useEffect, useRef, useState} from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  TextInput,
-  Keyboard,
-  Text,
-} from 'react-native';
+import {StyleSheet, View, TextInput, Keyboard, Text} from 'react-native';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import OtpField from '@ui/OtpField';
 import AppButton from '@ui/AppButton';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {AuthStackParamList} from 'src/@types/navigation';
+import {
+  AuthStackParamList,
+  ProfileNavigatorStackParamList,
+} from 'src/@types/navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import client from 'src/api/client';
+import {getClient} from 'src/api/client';
 import colors from '@utils/colors';
 import catchAsyncError from 'src/api/catchError';
 import {updateNotifocation} from 'src/store/notification';
 import {useDispatch} from 'react-redux';
+import {updateProfile} from 'src/store/auth';
 
-type Props = NativeStackScreenProps<AuthStackParamList, 'Verification'>;
+type Props = NativeStackScreenProps<
+  AuthStackParamList | ProfileNavigatorStackParamList,
+  'Verification'
+>;
+type PossibleScreens = {
+  ProfileSettings: undefined;
+  SignIn: undefined;
+};
 
 const otpTextFields = new Array(6).fill('');
 
@@ -33,7 +37,7 @@ const Verification: FC<Props> = props => {
 
   const {userInfo} = props.route.params;
 
-  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+  const navigation = useNavigation<NavigationProp<PossibleScreens>>();
   const dispatch = useDispatch();
 
   const inputRef = useRef<TextInput>(null);
@@ -71,12 +75,21 @@ const Verification: FC<Props> = props => {
       );
     setSubmitting(true);
     try {
+      const client = await getClient();
       const {data} = await client.post('/auth/verify-email', {
         userId: userInfo.id,
         token: otp.join(''),
       });
+      dispatch(updateProfile({...userInfo, verified: true}));
       dispatch(updateNotifocation({message: data.message, type: 'success'}));
-      navigation.navigate('SignIn');
+
+      const {routeNames} = navigation.getState();
+      if (routeNames.includes('SignIn')) {
+        navigation.navigate('SignIn');
+      }
+      if (routeNames.includes('ProfileSettings')) {
+        navigation.navigate('ProfileSettings');
+      }
     } catch (error) {
       const errorMessage = catchAsyncError(error);
       dispatch(updateNotifocation({message: errorMessage, type: 'error'}));
@@ -88,11 +101,13 @@ const Verification: FC<Props> = props => {
     setCountDown(60);
     setAllowNewOtpRequest(false);
     try {
+      const client = await getClient();
       const {data} = await client.post('/auth/reverify-email', {
         userId: userInfo.id,
       });
     } catch (error) {
-      console.log('Error in Re-verify email: ', error);
+      const errorMessage = catchAsyncError(error);
+      dispatch(updateNotifocation({message: errorMessage, type: 'error'}));
     }
   };
 

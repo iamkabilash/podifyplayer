@@ -16,7 +16,7 @@ interface AuthProps {
   isBusy: boolean;
 }
 
-const initialState = {
+const initialState: AuthProps = {
   profile: null,
   loggedIn: false,
   isBusy: false,

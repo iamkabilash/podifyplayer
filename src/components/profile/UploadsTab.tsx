@@ -9,7 +9,6 @@ interface Props {}
 
 const UploadsTab: FC<Props> = props => {
   const {data, isLoading} = useFetchUploadsByProfile();
-  console.log(data);
 
   if (isLoading) return <AudioListLoadingUi />;
 

@@ -9,7 +9,6 @@ interface Props {}
 
 const FavouriteTab: FC<Props> = props => {
   const {data, isLoading} = useFetchFavouritesByProfile();
-  console.log(data);
 
   if (isLoading) return <AudioListLoadingUi />;
 
