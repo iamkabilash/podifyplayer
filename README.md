@@ -1,8 +1,17 @@
+# Project screenshots
+
+![Screen 1](./src/assets/screenshots/screen-1.png 'Screen 1')
+![Screen 2](./src/assets/screenshots/screen-2.png 'Screen 2')
+![Screen 3](./src/assets/screenshots/screen-3.png 'Screen 3')
+![Screen 4](./src/assets/screenshots/screen-4.png 'Screen 4')
+
+<hr />
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Start the Metro Server
 
